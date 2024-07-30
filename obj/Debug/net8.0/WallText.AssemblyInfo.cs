@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WallText")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0f556132c591dcd51e27d8a870c152f130a02c0e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eba5223252e61dbd102ac9e423fb161a6485d1c9")]
 [assembly: System.Reflection.AssemblyProductAttribute("WallText")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WallText")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
