@@ -33,8 +33,11 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
     public override string ModuleVersion => "1.0.0";
     public required PluginConfig Config { get; set; } = new PluginConfig();
     public static PluginCapability<IK4WorldTextSharedAPI> Capability_SharedAPI { get; } = new("k4-worldtext:sharedapi");
-
     private List<int> _currentText = new();
+    private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
+    {
+        WriteIndented = true
+    };
 
     public void OnConfigParsed(PluginConfig config)
     {
@@ -179,12 +182,7 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
 						   x.Rotation == target.Entity.AbsRotation.ToString();
 				});
 
-				var options = new JsonSerializerOptions
-				{
-					WriteIndented = true
-				};
-
-				string jsonString = JsonSerializer.Serialize(data, options);
+				string jsonString = JsonSerializer.Serialize(data, jsonOptions);
 				File.WriteAllText(path, jsonString);
 			}
 		}
@@ -221,12 +219,7 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
 
         data.Add(worldTextData);
 
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true
-        };
-
-        File.WriteAllText(path, JsonSerializer.Serialize(data, options));
+        File.WriteAllText(path, JsonSerializer.Serialize(data, jsonOptions));
     }
 
     private void LoadWorldTextFromFile(string? passedMapName = null)
