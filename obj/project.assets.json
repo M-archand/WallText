@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     "net8.0": {
-      "CounterStrikeSharp.API/1.0.253": {
+      "CounterStrikeSharp.API/1.0.259": {
         "type": "package",
         "dependencies": {
           "McMaster.NETCore.Plugins": "1.4.0",
@@ -907,14 +907,14 @@
     }
   },
   "libraries": {
-    "CounterStrikeSharp.API/1.0.253": {
-      "sha512": "MYEDI5k6LIEhZDZ1m+mOQJzIGR2seq/xu6wR2tGngdNs2MHeng3TAqXDdFjJCfyHLKEmnL2GrNHXyosAIllvZQ==",
+    "CounterStrikeSharp.API/1.0.259": {
+      "sha512": "T6g8e4v9QC3KWvPyWceYRIHmFjnR675mnzG4OoI+ZFq4eKmg2DhJNkFPMlR42/eHYWh1v45kNemG7a/pQQRk2w==",
       "type": "package",
-      "path": "counterstrikesharp.api/1.0.253",
+      "path": "counterstrikesharp.api/1.0.259",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "counterstrikesharp.api.1.0.253.nupkg.sha512",
+        "counterstrikesharp.api.1.0.259.nupkg.sha512",
         "counterstrikesharp.api.nuspec",
         "lib/net8.0/CounterStrikeSharp.API.dll",
         "lib/net8.0/CounterStrikeSharp.API.runtimeconfig.json",
@@ -2550,7 +2550,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "CounterStrikeSharp.API >= 1.0.253",
+      "CounterStrikeSharp.API >= 1.0.259",
       "Dapper >= 2.1.35"
     ]
   },
@@ -2600,7 +2600,7 @@
             "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "suppressParent": "None",
             "target": "Package",
-            "version": "[1.0.253, )"
+            "version": "[1.0.259, )"
           },
           "Dapper": {
             "target": "Package",

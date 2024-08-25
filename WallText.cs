@@ -19,8 +19,13 @@ public class PluginConfig : BasePluginConfig
     [JsonPropertyName("DisplayTexts")]
     public List<string> DisplayTexts { get; set; } = new List<string>() 
 	{ "{Salmon}First line of text.", "{Cyan}Second line of text.", "{MediumPurple}Third line of text." };
+
+    [JsonPropertyName("TextAlignment")]
+    public string TextAlignment { get; set; } = "left";
+
     [JsonPropertyName("FontSize")]
     public int FontSize { get; set; } = 24;
+
 	[JsonPropertyName("ConfigVersion")]
     public override int Version { get; set; } = 1;
 }
@@ -29,7 +34,7 @@ public class PluginConfig : BasePluginConfig
 public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
 {
     public override string ModuleName => "Wall Text";
-    public override string ModuleAuthor => "Marchand + https://github.com/K4ryuu";
+    public override string ModuleAuthor => "Marchand + K4ryuu";
     public override string ModuleVersion => "1.0.0";
     public required PluginConfig Config { get; set; } = new PluginConfig();
     public static PluginCapability<IK4WorldTextSharedAPI> Capability_SharedAPI { get; } = new("k4-worldtext:sharedapi");
@@ -80,7 +85,7 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
 		_currentText.Clear();
     }
 
-    [ConsoleCommand("css_walltext", "Sets up the wall text")]
+    [ConsoleCommand("css_walltext", "Set-up the wall text locations")]
     [RequiresPermissions("@css/root")]
     public void OnTextAdd(CCSPlayerController? player, CommandInfo? command)
     {
@@ -128,7 +133,7 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
         });
     }
 
-    [ConsoleCommand("css_walltextrem", "Removes the closest text")]
+    [ConsoleCommand("css_remove", "Removes the closest text")]
     [RequiresPermissions("@css/root")]
     public void OnTextRemove(CCSPlayerController? player, CommandInfo? command)
     {
@@ -280,6 +285,15 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
         throw new ArgumentException("Invalid QAngle string format.");
     }
 
+    private PointWorldTextJustifyHorizontal_t GetTextAlignment()
+    {
+        return Config.TextAlignment.ToLower() switch
+        {
+            "left" => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_LEFT,
+            _ => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_CENTER,
+        };
+    }
+
     private List<TextLine> GetTextLines()
     {
         var linesList = new List<TextLine>();
@@ -295,7 +309,8 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
                     Color = color,
                     FontSize = Config.FontSize,
                     FullBright = true,
-                    Scale = 0.45f
+                    Scale = 0.45f,
+                    JustifyHorizontal = GetTextAlignment()
                 });
             }
         }

@@ -47,7 +47,7 @@
               "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "None",
               "target": "Package",
-              "version": "[1.0.253, )"
+              "version": "[1.0.259, )"
             },
             "Dapper": {
               "target": "Package",
