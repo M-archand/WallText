@@ -49,10 +49,11 @@ All commands can be configured, these are the default commands:
 - [X] Update for SharpTimer usage.
 - [X] Add color configs. See [here](https://i.sstatic.net/lsuz4.png) for color names.
 - [X] Add left alignment.
-- [ ] Add font size & scale to config.
-- [ ] Fix inconsistent results for !removelist
-- [ ] Add configurabled commands.
-- [ ] Add configurable permissions.
+- [X] Add font size & scale to config.
+- [X] Fix inconsistent results for !removelist
+- [X] Add configurabled commands.
+- [X] Add configurable permissions.
+- [ ] Add minor adjustment commands
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
