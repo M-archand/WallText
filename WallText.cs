@@ -18,13 +18,22 @@ public class PluginConfig : BasePluginConfig
 {
     [JsonPropertyName("DisplayTexts")]
     public List<string> DisplayTexts { get; set; } = new List<string>() 
-	{ "{Salmon}First line of text.", "{Cyan}Second line of text.", "{MediumPurple}Third line of text." };
+	{ "{Salmon}First line of text.", "{Cyan}Second line of text.", "{Pink}Third line of text." };
 
     [JsonPropertyName("TextAlignment")]
     public string TextAlignment { get; set; } = "left";
 
     [JsonPropertyName("FontSize")]
     public int FontSize { get; set; } = 24;
+
+    [JsonPropertyName("TextScale")]
+    public float TextScale { get; set; } = 0.45f;
+
+    [JsonPropertyName("RemoveTextCommand")]
+    public string RemoveTextCommand { get; set; } = "remove";
+    
+    [JsonPropertyName("CommandPermission")]
+    public string CommandPermission { get; set; } = "@css/root";
 
 	[JsonPropertyName("ConfigVersion")]
     public override int Version { get; set; } = 1;
@@ -56,6 +65,7 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
     {
         AddTimer(3, () => LoadWorldTextFromFile());
 
+        AddCommand($"css_{Config.RemoveTextCommand}", "Removes the closest list, whether points or map", OnTextRemove);
 
         RegisterEventHandler((EventRoundStart @event, GameEventInfo info) =>
         {
@@ -133,8 +143,8 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
         });
     }
 
-    [ConsoleCommand("css_remove", "Removes the closest text")]
-    [RequiresPermissions("@css/root")]
+    [ConsoleCommand($"css_{DefaultCommandNames.RemoveListCommand}", "Removes the closest text")]
+    [RequiresPermissions($"{DefaultCommandNames.CommandPermission}")]
     public void OnTextRemove(CCSPlayerController? player, CommandInfo? command)
     {
         if (player == null || command == null) return;
@@ -171,7 +181,8 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
         _currentText.Remove(target.Id);
 
         var mapName = Server.MapName;
-        var path = Path.Combine(ModuleDirectory, $"{mapName}_text.json");
+        var mapsDirectory = Path.Combine(ModuleDirectory, "maps");
+        var path = Path.Combine(mapsDirectory, $"{mapName}_text.json");
 
         if (File.Exists(path))
 		{
@@ -363,6 +374,12 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
             });
         });
     }
+}
+
+public static class DefaultCommandNames
+{
+    public const string RemoveListCommand = "remove";
+    public const string CommandPermission = "@css/root";
 }
 
 public class WorldTextData
