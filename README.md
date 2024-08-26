@@ -50,7 +50,7 @@ All commands can be configured, these are the default commands:
 - [X] Add color configs. See [here](https://i.sstatic.net/lsuz4.png) for color names.
 - [X] Add left alignment.
 - [X] Add font size & scale to config.
-- [X] Fix inconsistent results for !removelist
+- [X] Fix inconsistent results for !remove
 - [X] Add configurabled commands.
 - [X] Add configurable permissions.
 - [ ] Add minor adjustment commands
