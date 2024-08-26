@@ -320,7 +320,7 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
                     Color = color,
                     FontSize = Config.FontSize,
                     FullBright = true,
-                    Scale = 0.45f,
+                    Scale = Config.TextScale,
                     JustifyHorizontal = GetTextAlignment()
                 });
             }
