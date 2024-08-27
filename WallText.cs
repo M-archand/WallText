@@ -216,7 +216,8 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
     private void SaveWorldTextToFile(Vector location, QAngle rotation)
     {
         var mapName = Server.MapName;
-        var path = Path.Combine(ModuleDirectory, $"{mapName}_text.json");
+        var mapsDirectory = Path.Combine(ModuleDirectory, "maps");
+        var path = Path.Combine(mapsDirectory, $"{mapName}_text.json");
         var worldTextData = new WorldTextData
         {
             Location = location.ToString(),
@@ -241,7 +242,8 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
     private void LoadWorldTextFromFile(string? passedMapName = null)
     {
         var mapName = passedMapName ?? Server.MapName;
-        var path = Path.Combine(ModuleDirectory, $"{mapName}_text.json");
+        var mapsDirectory = Path.Combine(ModuleDirectory, "maps");
+        var path = Path.Combine(mapsDirectory, $"{mapName}_text.json");
 
         if (File.Exists(path))
         {
