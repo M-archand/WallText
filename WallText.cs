@@ -30,7 +30,7 @@ public class PluginConfig : BasePluginConfig
     public float TextScale { get; set; } = 0.45f;
 
     [JsonPropertyName("RemoveTextCommand")]
-    public string RemoveTextCommand { get; set; } = "remove";
+    public string RemoveTextCommand { get; set; } = "removetext";
     
     [JsonPropertyName("CommandPermission")]
     public string CommandPermission { get; set; } = "@css/root";
@@ -380,7 +380,7 @@ public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
 
 public static class DefaultCommandNames
 {
-    public const string RemoveListCommand = "remove";
+    public const string RemoveListCommand = "removetext";
     public const string CommandPermission = "@css/root";
 }
 
