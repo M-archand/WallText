@@ -5,8 +5,8 @@ namespace WallText
 {
     public class PluginConfig : BasePluginConfig
     {
-        [JsonPropertyName("DisplayTexts")]
-        public Dictionary<int, List<string>> DisplayTexts { get; set; } = new Dictionary<int, List<string>>()
+        [JsonPropertyName("WallText")]
+        public Dictionary<int, List<string>> WallText { get; set; } = new Dictionary<int, List<string>>()
         {
             { 1, new List<string> 
                 { 

@@ -105,7 +105,7 @@ namespace WallText
                 return;
             }
 
-            if (!Config.DisplayTexts.ContainsKey(groupNumber))
+            if (!Config.WallText.ContainsKey(groupNumber))
             {
                 command.ReplyToCommand($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.Red}Group {ChatColors.White}{groupNumber} {ChatColors.Red}does not exist in the plugin config.");
                 command.ReplyToCommand($"                     {ChatColors.Red}Please create it first.");
@@ -343,7 +343,7 @@ namespace WallText
         {
             var linesList = new List<TextLine>();
 
-            if (Config.DisplayTexts.TryGetValue(groupNumber, out var textGroup))
+            if (Config.WallText.TryGetValue(groupNumber, out var textGroup))
             {
                 foreach (var text in textGroup)
                 {
@@ -364,7 +364,7 @@ namespace WallText
             }
             else
             {
-                Logger.LogWarning($"DisplayTexts {groupNumber} not found in config.");
+                Logger.LogWarning($"WallText {groupNumber} not found in config.");
             }
 
             return linesList;
@@ -400,7 +400,7 @@ namespace WallText
         {
             Task.Run(() =>
             {
-                foreach (var groupNumber in Config.DisplayTexts.Keys)
+                foreach (var groupNumber in Config.WallText.Keys)
                 {
                     var linesList = GetTextLines(groupNumber);
 
