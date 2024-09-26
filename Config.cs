@@ -33,8 +33,8 @@ namespace WallText
         [JsonPropertyName("TextScale")]
         public float TextScale { get; set; } = 0.45f;
 
-        [JsonPropertyName("RemoveTextCommand")]
-        public string RemoveTextCommand { get; set; } = "removetext";
+        [JsonPropertyName("RemoveCommand")]
+        public string RemoveCommand { get; set; } = "removetext";
         
         [JsonPropertyName("CommandPermission")]
         public string CommandPermission { get; set; } = "@css/root";

@@ -39,7 +39,7 @@ namespace WallText
         {
             AddTimer(3, () => LoadWorldTextFromFile());
 
-            AddCommand($"css_{Config.RemoveTextCommand}", "Removes the closest list, whether points or map", OnTextRemove);
+            AddCommand($"css_{Config.RemoveCommand}", "Removes the closest list, whether points or map", OnTextRemove);
 
             RegisterEventHandler((EventRoundStart @event, GameEventInfo info) =>
             {
@@ -108,7 +108,7 @@ namespace WallText
             if (!Config.DisplayTexts.ContainsKey(groupNumber))
             {
                 command.ReplyToCommand($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.Red}Group {ChatColors.White}{groupNumber} {ChatColors.Red}does not exist in the plugin config.");
-                command.ReplyToCommand($"                    {ChatColors.Red}Please create it first.");
+                command.ReplyToCommand($"                     {ChatColors.Red}Please create it first.");
                 return;
             }
 
@@ -150,7 +150,7 @@ namespace WallText
             });
         }
 
-        [ConsoleCommand($"css_{DefaultCommandNames.RemoveListCommand}", "Removes the closest text")]
+        [ConsoleCommand($"css_{DefaultCommandNames.RemoveCommand}", "Removes the closest text")]
         [RequiresPermissions($"{DefaultCommandNames.CommandPermission}")]
         public void OnTextRemove(CCSPlayerController? player, CommandInfo? command)
         {
@@ -425,7 +425,7 @@ namespace WallText
 
     public static class DefaultCommandNames
     {
-        public const string RemoveListCommand = "removetext";
+        public const string RemoveCommand = "removetext";
         public const string CommandPermission = "@css/root";
     }
 
