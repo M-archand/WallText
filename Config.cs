@@ -10,9 +10,9 @@ namespace WallText
         {
             { 1, new List<string> 
                 { 
-                    "{Green}First line of text from Group 1.", 
-                    "{Cyan}Second line of text from Group 1.", 
-                    "{Pink}Third line of text from Group 1."
+                    "{White}First line of text from Group 1.", 
+                    "{White}Second line of text from Group 1.", 
+                    "{White}Third line of text from Group 1."
                 } 
             },
             { 2, new List<string> 
