@@ -32,7 +32,7 @@ To use this plugin, you'll need the following dependencies installed:
 
 Default Access: @css/root, can be configured.
 All commands can be configured, these are the default commands:
-- !walltext # - Creates the wall text in front of the player and saves it to config file. E.g. !walltext 1 will add the text from group 1 in the config.
+- !walltext # - Creates the wall text in front of the player and saves it to config file. E.g. !walltext 1 will add the text from group 1 in the config. You can place each group in as many locations as you please.
 - !removetext - Remove the closest wall text from your position and deletes in from the config file. (100 units max)
 
 <!-- CONFIG -->
