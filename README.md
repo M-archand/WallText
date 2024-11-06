@@ -1,7 +1,7 @@
 <a name="readme-top"></a>
 
 > [!IMPORTANT]
-> Credits for the base plugin go to [K4ryuu](https://github.com/K4ryuu)! I made some changes and added several extra features. Can't fork it twice so had to make a new repo.
+> Credits for the base plugin go to [K4ryuu](https://github.com/K4ryuu)! I made some changes but can't fork it twice so had to make a new repo.
 
 <!-- PROJECT LOGO -->
 <br />
