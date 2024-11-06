@@ -13,7 +13,7 @@
 
   <p align="center">
     <br />
-    <a href="https://github.com/M-archand/WallText/releases/tag/1.0.0">Download</a>
+    <a href="https://github.com/M-archand/WallText/releases/tag/1.0.1">Download</a>
   </p>
 </div>
 
@@ -21,7 +21,7 @@
 
 ### Dependencies
 
-To use this server addon, you'll need the following dependencies installed:
+To use this plugin, you'll need the following dependencies installed:
 
 - [**CounterStrikeSharp**](https://github.com/roflmuffin/CounterStrikeSharp/releases): CounterStrikeSharp allows you to write server plugins in C# for Counter-Strike 2.
 - [**K4-WorldText-API**](https://github.com/K4ryuu/K4-WorldText-API): This is a shared developer API to handle world text.
@@ -32,8 +32,8 @@ To use this server addon, you'll need the following dependencies installed:
 
 Default Access: @css/root, can be configured.
 All commands can be configured, these are the default commands:
-- !walltext - Creates the wall text in front of the player and saves it to config file.
-- !remove   - Remove the closest wall text from your position and deletes in from the config file. (100 units max)
+- !walltext # - Creates the wall text in front of the player and saves it to config file. E.g. !walltext 1 will add the text from group 1 in the config.
+- !removetext - Remove the closest wall text from your position and deletes in from the config file. (100 units max)
 
 <!-- CONFIG -->
 
@@ -46,14 +46,14 @@ All commands can be configured, these are the default commands:
 
 ## Roadmap
 
-- [X] Update for SharpTimer usage.
 - [X] Add color configs. See [here](https://i.sstatic.net/lsuz4.png) for color names.
 - [X] Add left alignment.
 - [X] Add font size & scale to config.
 - [X] Fix inconsistent results for !remove
 - [X] Add configurabled commands.
 - [X] Add configurable permissions.
-- [ ] Add minor adjustment commands
+- [X] Add text groups.
+- [ ] Add minor adjustment commands.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
