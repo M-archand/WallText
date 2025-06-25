@@ -14,11 +14,11 @@ using System.Text.Json;
 namespace WallText
 {
     [MinimumApiVersion(205)]
-    public class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
+    public partial class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
     {
         public override string ModuleName => "Wall Text";
         public override string ModuleAuthor => "Marchand";
-        public override string ModuleVersion => "1.0.1";
+        public override string ModuleVersion => "1.0.2";
         public required PluginConfig Config { get; set; } = new PluginConfig();
         public static PluginCapability<IK4WorldTextSharedAPI> Capability_SharedAPI { get; } = new("k4-worldtext:sharedapi");
         private Dictionary<int, List<int>> _currentTextByGroup = new();
@@ -33,6 +33,9 @@ namespace WallText
                 base.Logger.LogWarning("Configuration version mismatch (Expected: {0} | Current: {1})", this.Config.Version, config.Version);
 
             this.Config = config;
+
+            if (Config.UseDatabase)
+                InitializeDatabaseAndConnectionString();
         }
 
         public override void OnAllPluginsLoaded(bool hotReload)
