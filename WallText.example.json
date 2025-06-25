@@ -15,10 +15,10 @@
                                                 to add a , to the previous group after the ] when adding a new group. The last group should
                                                 not have a , after the ]
   },
-  "TextAlignment": "left", // Usage = left, center
+  "TextAlignment": "left", // Usage = left, center, right
   "FontSize": 24,
   "TextScale": 0.45,
-  "RemoveTextCommand": "removetext", // The command to remove a list, in game use !removetext. Feel free to change this.
+  "RemoveTextCommand": "rtext", // The command to remove a list, in game use !rtext. Feel free to change this.
   "CommandPermission": "@css/root", // The permission required to use these commands. Feel free to change this.
   "ConfigVersion": 2
 }
