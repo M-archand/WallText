@@ -5,9 +5,34 @@ namespace WallText
 {
     public class PluginConfig : BasePluginConfig
     {
-        [JsonPropertyName("UseDatabase")]
-        public bool UseDatabase { get; set; } = true;
+        [JsonPropertyName("ConfigVersion")]
+        public override int Version { get; set; } = 3;
+
+        [JsonPropertyName("EnableDatabase")]
+        public bool EnableDatabase { get; set; } = true;
         public DatabaseSettings DatabaseSettings { get; set; } = new DatabaseSettings();
+
+        [JsonPropertyName("TextAlignment")]
+        public string TextAlignment { get; set; } = "left";
+
+        [JsonPropertyName("FontSize")]
+        public int FontSize { get; set; } = 24;
+
+        [JsonPropertyName("TextScale")]
+        public float TextScale { get; set; } = 0.45f;
+
+        [JsonPropertyName("RemoveDistance")]
+        public float RemoveDistance { get; set; } = 200.0f;
+
+        [JsonPropertyName("RemoveCommand")]
+        public string RemoveCommand { get; set; } = "rtext";
+
+        [JsonPropertyName("AddCommand")]
+        public string AddCommand { get; set; } = "text";
+
+        [JsonPropertyName("CommandPermission")]
+        public string CommandPermission { get; set; } = "@css/root";
+
 
         [JsonPropertyName("WallText")]
         public Dictionary<int, List<string>> WallText { get; set; } = new Dictionary<int, List<string>>()
@@ -27,24 +52,6 @@ namespace WallText
                 }
             }
         };
-
-        [JsonPropertyName("TextAlignment")]
-        public string TextAlignment { get; set; } = "left";
-
-        [JsonPropertyName("FontSize")]
-        public int FontSize { get; set; } = 24;
-
-        [JsonPropertyName("TextScale")]
-        public float TextScale { get; set; } = 0.45f;
-
-        [JsonPropertyName("RemoveCommand")]
-        public string RemoveCommand { get; set; } = "removetext";
-
-        [JsonPropertyName("CommandPermission")]
-        public string CommandPermission { get; set; } = "@css/root";
-
-        [JsonPropertyName("ConfigVersion")]
-        public override int Version { get; set; } = 3;
     }
     
     public sealed class DatabaseSettings
@@ -65,9 +72,9 @@ namespace WallText
         public int Port { get; set; } = 3306;
 
         [JsonPropertyName("sslmode")]
-        public string Sslmode { get; set; } = "none";
+        public string SslMode { get; set; } = "None";
 
         [JsonPropertyName("table-name")]
-        public string TableName { get; set; } = "Wall-Text";
+        public string TableName { get; set; } = "wall_text";
     }
 }
