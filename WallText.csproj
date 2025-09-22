@@ -1,16 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DebugSymbols>False</DebugSymbols>
-    <DebugType>None</DebugType>
-    <GenerateDependencyFile>false</GenerateDependencyFile>
-  </PropertyGroup>
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="CounterStrikeSharp.API" Version="1.0.319">
+    <PackageReference Include="CounterStrikeSharp.API" Version="1.0.340">
       <PrivateAssets>none</PrivateAssets>
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,7 +16,7 @@
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="MySqlConnector" Version="2.4.0" />
     <Reference Include="K4WorldTextSharedApi">
-      <HintPath>K4-WorldText-SharedAPI.dll</HintPath>
+      <HintPath>C:\CounterStrikeSharp\K4-WorldText-API\src-shared\bin\Debug\net8.0\K4-WorldText-SharedAPI.dll</HintPath>
       <Private>true</Private>
     </Reference>
   </ItemGroup>
