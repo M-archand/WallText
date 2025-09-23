@@ -5,12 +5,12 @@ using CounterStrikeSharp.API.Core.Capabilities;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
-using Dapper;
 using K4WorldTextSharedAPI;
-using Microsoft.Extensions.Logging;
 using System.Drawing;
 using System.Globalization;
 using System.Text.Json;
+using Dapper;
+using Microsoft.Extensions.Logging;
 
 namespace WallText
 {
@@ -23,6 +23,7 @@ namespace WallText
         public required PluginConfig Config { get; set; } = new PluginConfig();
         public static PluginCapability<IK4WorldTextSharedAPI> Capability_SharedAPI { get; } = new("k4-worldtext:sharedapi");
         private Dictionary<int, List<int>> _currentTextByGroup = new();
+        private static readonly string chatPrefix = $" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}]";
         private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true
@@ -77,23 +78,6 @@ namespace WallText
             if (Config.Version < ExpectedVersion)
                 Logger.LogWarning("Configuration version mismatch (Expected: {0} | Current: {1})", ExpectedVersion, Config.Version);
 
-            // Clear anything already spawned (e.g. hot reload)
-            try
-            {
-                var checkAPI = Capability_SharedAPI.Get();
-                if (checkAPI != null && _currentTextByGroup.Count > 0)
-                {
-                    foreach (var kvp in _currentTextByGroup)
-                        foreach (var id in kvp.Value)
-                            checkAPI.RemoveWorldText(id, false);
-                }
-                _currentTextByGroup.Clear();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Error clearing existing Wall-Text on config parse.");
-            }
-
             if (Config.EnableDatabase)
             {
                 InitializeDatabaseConnectionString();
@@ -141,24 +125,31 @@ namespace WallText
 
             if (!AdminManager.PlayerHasPermissions(player, Config.CommandPermission))
             {
-                command.ReplyToCommand($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.LightRed}You do not have permission to use this command.");
+                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}You do not have permission to use this command.");
                 return;
             }
 
             var api = Capability_SharedAPI.Get();
             if (api is null)
             {
-                command.ReplyToCommand($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.LightRed}K4-WorldText-API missing.");
+                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}K4-WorldText-API missing.");
                 return;
             }
 
             if (command.ArgCount < 2 || !int.TryParse(command.GetArg(1), out var groupNumber))
             {
-                command.ReplyToCommand($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.LightRed}Usage: !{Config.AddCommand} <groupNumber>");
+                command.ReplyToCommand($"{chatPrefix} {ChatColors.White}Usage: {ChatColors.LightRed}!{Config.AddCommand} <groupNumber>");
+                return;
+            }
+
+            if (!Config.WallText.TryGetValue(groupNumber, out var _) || (Config.WallText[groupNumber] == null) || (Config.WallText[groupNumber].Count == 0))
+            {
+                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}Group {groupNumber} was not found in the config.");
                 return;
             }
 
             var linesList = GetTextLines(groupNumber);
+
             Server.NextWorldUpdate(() =>
             {
                 try
@@ -195,7 +186,7 @@ namespace WallText
         {
             var mapName = Server.MapName;
             var mapsDirectory = Path.Combine(ModuleDirectory, "maps");
-            var path = Path.Combine(mapsDirectory, $"{mapName}_text.json");
+            var path = Path.Combine(mapsDirectory, $"{mapName}.json");
 
             var worldTextData = new WorldTextData
             {
@@ -226,7 +217,7 @@ namespace WallText
 
             if (!AdminManager.PlayerHasPermissions(player, Config.CommandPermission))
             {
-                command.ReplyToCommand($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.LightRed}You do not have permission to use this command.");
+                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}You do not have permission to use this command.");
                 return;
             }
 
@@ -234,7 +225,7 @@ namespace WallText
             var api = Capability_SharedAPI.Get();
             if (api == null)
             {
-                command.ReplyToCommand($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.LightRed}K4-WorldText-API missing.");
+                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}K4-WorldText-API missing.");
                 return;
             }
 
@@ -258,7 +249,7 @@ namespace WallText
                 if (checkAPI is null)
                 {
                     Server.NextFrame(() =>
-                        player.PrintToChat($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.LightRed}K4-WorldText-API missing.")
+                        player.PrintToChat($"{chatPrefix} {ChatColors.LightRed}K4-WorldText-API missing.")
                     );
                     return false;
                 }
@@ -297,7 +288,7 @@ namespace WallText
                 if (targetMsgId == null || targetGroup == -1 || targetLoc == null || targetAng == null)
                 {
                     Server.NextFrame(() =>
-                        player.PrintToChat($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.LightRed}Move closer to the text you want to remove.")
+                        player.PrintToChat($"{chatPrefix} {ChatColors.LightRed}Move closer to the text you want to remove.")
                     );
                     return false;
                 }
@@ -312,7 +303,7 @@ namespace WallText
 
                 Server.NextFrame(() =>
                 {
-                    player.PrintToChat($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.Lime}Removed one placement from group {targetGroup} on {mapName}.");
+                    player.PrintToChat($"{chatPrefix} {ChatColors.Lime}Removed one placement from {ChatColors.White}Group {targetGroup} {ChatColors.Lime}on {ChatColors.White}{mapName}");
                     RefreshText();
                 });
 
@@ -354,7 +345,7 @@ namespace WallText
 
             if (target is null)
             {
-                command.ReplyToCommand($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.Red}Move within {Config.RemoveDistance} units of the text that you want to remove.");
+                command.ReplyToCommand($"{chatPrefix} {ChatColors.Red}Move within {Config.RemoveDistance} units of the text that you want to remove.");
                 return;
             }
 
@@ -367,7 +358,7 @@ namespace WallText
 
             var mapName = Server.MapName;
             var mapsDirectory = Path.Combine(ModuleDirectory, "maps");
-            var path = Path.Combine(mapsDirectory, $"{mapName}_text.json");
+            var path = Path.Combine(mapsDirectory, $"{mapName}.json");
 
             if (File.Exists(path))
             {
@@ -388,14 +379,14 @@ namespace WallText
                 }
             }
 
-            command.ReplyToCommand($" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}] {ChatColors.Green}Text removed!");
+            player.PrintToChat($"{chatPrefix} {ChatColors.Lime}Removed one placement from {ChatColors.White}Group {groupWithTarget} {ChatColors.Lime}on {ChatColors.White}{mapName}");
         }
 
         private void LoadWorldTextFromJson(string? passedMapName = null)
         {
             var mapName = passedMapName ?? Server.MapName;
             var mapsDirectory = Path.Combine(ModuleDirectory, "maps");
-            var path = Path.Combine(mapsDirectory, $"{mapName}_text.json");
+            var path = Path.Combine(mapsDirectory, $"{mapName}.json");
 
             if (File.Exists(path))
             {
