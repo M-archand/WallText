@@ -103,6 +103,7 @@ namespace WallText
 
             AddCommand($"css_{Config.AddCommand}", "Add text in front of you", OnTextAdd);
             AddCommand($"css_{Config.RemoveCommand}", "Removes the closest list, whether points or map", OnTextRemove);
+            AddCommand("css_importtext", "Imports any existing JSON list locations into the database", OnImportText);
         }
 
         public override void Unload(bool hotReload)
@@ -272,7 +273,7 @@ namespace WallText
 
                         var loc = line0.AbsOrigin;
                         float dx = loc.X - playerPos.X, dy = loc.Y - playerPos.Y, dz = loc.Z - playerPos.Z;
-                        float dist = (float)Math.Sqrt(dx*dx + dy*dy + dz*dz);
+                        float dist = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
 
                         if (dist < bestDist && dist <= Config.RemoveDistance)
                         {
@@ -580,10 +581,10 @@ namespace WallText
         {
             return Config.TextAlignment.ToLower() switch
             {
-                "left"   => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_LEFT,
+                "left" => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_LEFT,
                 "center" => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_CENTER,
-                "right"  => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_RIGHT,
-                _        => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_CENTER
+                "right" => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_RIGHT,
+                _ => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_CENTER
             };
         }
 
@@ -612,6 +613,13 @@ namespace WallText
 
             return (color, text);
         }
+        
+        private static readonly JsonSerializerOptions JsonOpts = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            AllowTrailingCommas = true
+        };
     }
 
     public class WorldTextData
