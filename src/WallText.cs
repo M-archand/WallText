@@ -5,6 +5,7 @@ using CounterStrikeSharp.API.Core.Capabilities;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
+using CS2MenuManager.API.Class;
 using K4WorldTextSharedAPI;
 using System.Drawing;
 using System.Globalization;
@@ -22,6 +23,7 @@ namespace WallText
         public override string ModuleVersion => "1.0.2";
         public required PluginConfig Config { get; set; } = new PluginConfig();
         public static PluginCapability<IK4WorldTextSharedAPI> Capability_SharedAPI { get; } = new("k4-worldtext:sharedapi");
+        private bool _hasMenuManager;
         private Dictionary<int, List<int>> _currentTextByGroup = new();
         private static readonly string chatPrefix = $" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}]";
         private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
@@ -68,6 +70,18 @@ namespace WallText
                 }
                 _currentTextByGroup.Clear();
             });
+
+            // Check for CS2MenuManager installation
+            try
+            {
+                var dummy = MenuManager.MenuTypesList;
+                _hasMenuManager = true;
+            }
+            catch (Exception)
+            {
+                _hasMenuManager = false;
+                Server.PrintToConsole("[Wall-Lists] CS2MenuManager API not found! Move menu command has been disabled.");
+            }
         }
 
         public void OnConfigParsed(PluginConfig config)
@@ -103,6 +117,7 @@ namespace WallText
 
             AddCommand($"css_{Config.AddCommand}", "Add text in front of you", OnTextAdd);
             AddCommand($"css_{Config.RemoveCommand}", "Removes the closest list, whether points or map", OnTextRemove);
+            AddCommand($"css_{Config.MoveCommand}", "Removes the closest list, whether points or map", OnTextMove);
             AddCommand("css_importtext", "Imports any existing JSON list locations into the database", OnImportText);
         }
 

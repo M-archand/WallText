@@ -13,6 +13,7 @@
       <ExcludeAssets>runtime</ExcludeAssets>
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="CS2MenuManager" Version="1.0.40" />
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="MySqlConnector" Version="2.4.0" />
     <Reference Include="K4WorldTextSharedApi">

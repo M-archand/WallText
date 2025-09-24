@@ -30,6 +30,12 @@ namespace WallText
         [JsonPropertyName("AddCommand")]
         public string AddCommand { get; set; } = "text";
 
+        [JsonPropertyName("MoveCommand")]
+        public string MoveCommand { get; set; } = "mtext";
+
+        [JsonPropertyName("MenuType")]
+        public string MenuType { get; set; } = "WasdMenu";
+
         [JsonPropertyName("CommandPermission")]
         public string CommandPermission { get; set; } = "@css/root";
 
