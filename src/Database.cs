@@ -158,7 +158,12 @@ namespace WallText
                 foreach (var filePath in files)
                 {
                     var fileName = Path.GetFileName(filePath);
-                    var mapName  = Path.GetFileNameWithoutExtension(filePath);
+                    
+                    var baseName = Path.GetFileNameWithoutExtension(filePath);
+                    if (baseName.EndsWith("_text", StringComparison.OrdinalIgnoreCase))
+                        baseName = baseName[..^5];
+                    var mapName = baseName;
+
                     filesTouched++;
 
                     List<WorldTextData>? data = null;
