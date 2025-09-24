@@ -38,7 +38,7 @@ namespace WallText
         private IDbConnection CreateDbConnection()
         {
             if (string.IsNullOrWhiteSpace(_connectionString))
-                throw new InvalidOperationException("MySQL connection string not initialized. Call InitializeDatabaseConnectionString() first.");
+                throw new InvalidOperationException("MySQL connection string not initialized");
 
             return new MySqlConnection(_connectionString);
         }
@@ -127,7 +127,7 @@ namespace WallText
                 return;
             }
 
-            player.PrintToChat($"{chatPrefix} {ChatColors.White}Scanning /plugins/WallText/maps folder");
+            player.PrintToChat($"{chatPrefix} {ChatColors.White}Scanning {ChatColors.Lime}/plugins/WallText/maps {ChatColors.White}folder");
 
             _ = Task.Run(async () =>
             {
@@ -158,7 +158,7 @@ namespace WallText
                 foreach (var filePath in files)
                 {
                     var fileName = Path.GetFileName(filePath);
-                    
+
                     var baseName = Path.GetFileNameWithoutExtension(filePath);
                     if (baseName.EndsWith("_text", StringComparison.OrdinalIgnoreCase))
                         baseName = baseName[..^5];
@@ -236,7 +236,7 @@ namespace WallText
                 if (totalQueued == 0) return;
 
 
-                const int importsPerFrame = 12;
+                const int importsPerFrame = 1;
                 int index = 0;
 
                 Action pump = null!;
