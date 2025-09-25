@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Dapper;
 using MySqlConnector;
 
-namespace WallText
+namespace WorldText
 {
     public partial class PluginWallText
     {
@@ -145,7 +145,7 @@ namespace WallText
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, "[Wall-Text] Error reading maps directory");
+                    Logger.LogError(ex, "[World-Text] Error reading maps directory");
                     Server.NextWorldUpdate(() => player.PrintToChat($"{chatPrefix} {ChatColors.Red}Failed to read {mapsDir} (check logs)"));
                     return;
                 }
@@ -174,13 +174,13 @@ namespace WallText
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError(ex, $"[Wall-Text] Failed reading {fileName}; skipping");
+                        Logger.LogError(ex, $"[World-Text] Failed reading {fileName}; skipping");
                         continue;
                     }
 
                     if (data == null || data.Count == 0)
                     {
-                        Logger.LogInformation($"[Wall-Text] {fileName}: 0 entries");
+                        Logger.LogInformation($"[World-Text] {fileName}: 0 entries");
                         continue;
                     }
 
@@ -216,12 +216,12 @@ namespace WallText
                         }
                         catch (Exception ex)
                         {
-                            Logger.LogWarning($"[Wall-Text] {fileName}: skipping malformed entry (#{importQueue.Count + 1}). {ex.Message}");
+                            Logger.LogWarning($"[World-Text] {fileName}: skipping malformed entry (#{importQueue.Count + 1}). {ex.Message}");
                             continue;
                         }
                     }
 
-                    Logger.LogInformation($"[Wall-Text] {fileName}: queued {ok} / {data.Count}.");
+                    Logger.LogInformation($"[World-Text] {fileName}: queued {ok} / {data.Count}.");
                 }
 
                 var totalQueued = importQueue.Count;
@@ -255,7 +255,7 @@ namespace WallText
                         }
                         catch (Exception ex)
                         {
-                            Logger.LogError(ex, $"[Wall-Text] Import insert failed for {e.MapName}/Group {e.GroupNumber}");
+                            Logger.LogError(ex, $"[World-Text] Import insert failed for {e.MapName}/Group {e.GroupNumber}");
                         }
                         doneThisFrame++;
                     }

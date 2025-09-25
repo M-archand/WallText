@@ -13,19 +13,19 @@ using System.Text.Json;
 using Dapper;
 using Microsoft.Extensions.Logging;
 
-namespace WallText
+namespace WorldText
 {
     [MinimumApiVersion(205)]
     public partial class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
     {
-        public override string ModuleName => "Wall Text";
+        public override string ModuleName => "World Text";
         public override string ModuleAuthor => "Marchand";
         public override string ModuleVersion => "1.0.2";
         public required PluginConfig Config { get; set; } = new PluginConfig();
         public static PluginCapability<IK4WorldTextSharedAPI> Capability_SharedAPI { get; } = new("k4-worldtext:sharedapi");
         private bool _hasMenuManager;
         private Dictionary<int, List<int>> _currentTextByGroup = new();
-        private static readonly string chatPrefix = $" {ChatColors.Purple}[{ChatColors.LightPurple}Wall-Text{ChatColors.Purple}]";
+        private static readonly string chatPrefix = $" {ChatColors.Purple}[{ChatColors.LightPurple}World-Text{ChatColors.Purple}]";
         private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true
@@ -158,7 +158,7 @@ namespace WallText
                 return;
             }
 
-            if (!Config.WallText.TryGetValue(groupNumber, out var _) || (Config.WallText[groupNumber] == null) || (Config.WallText[groupNumber].Count == 0))
+            if (!Config.WorldText.TryGetValue(groupNumber, out var _) || (Config.WorldText[groupNumber] == null) || (Config.WorldText[groupNumber].Count == 0))
             {
                 command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}Group {groupNumber} was not found in the config.");
                 return;
@@ -486,7 +486,7 @@ namespace WallText
         {
             var linesList = new List<TextLine>();
 
-            if (Config.WallText.TryGetValue(groupNumber, out var textGroup))
+            if (Config.WorldText.TryGetValue(groupNumber, out var textGroup))
             {
                 foreach (var text in textGroup)
                 {
@@ -517,7 +517,7 @@ namespace WallText
         {
             Task.Run(() =>
             {
-                foreach (var groupNumber in Config.WallText.Keys)
+                foreach (var groupNumber in Config.WorldText.Keys)
                 {
                     var linesList = GetTextLines(groupNumber);
 

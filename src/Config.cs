@@ -1,7 +1,7 @@
 using CounterStrikeSharp.API.Core;
 using System.Text.Json.Serialization;
 
-namespace WallText
+namespace WorldText
 {
     public class PluginConfig : BasePluginConfig
     {
@@ -40,8 +40,8 @@ namespace WallText
         public string CommandPermission { get; set; } = "@css/root";
 
 
-        [JsonPropertyName("WallText")]
-        public Dictionary<int, List<string>> WallText { get; set; } = new Dictionary<int, List<string>>()
+        [JsonPropertyName("WorldText")]
+        public Dictionary<int, List<string>> WorldText { get; set; } = new Dictionary<int, List<string>>()
         {
             { 1, new List<string>
                 {
@@ -81,6 +81,6 @@ namespace WallText
         public string SslMode { get; set; } = "None";
 
         [JsonPropertyName("table-name")]
-        public string TableName { get; set; } = "wall_text";
+        public string TableName { get; set; } = "world_text";
     }
 }

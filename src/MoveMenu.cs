@@ -11,7 +11,7 @@ using Dapper;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 
-namespace WallText
+namespace WorldText
 {
     public partial class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
     {
@@ -98,7 +98,7 @@ namespace WallText
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, "[Wall-Text] Failed to load DB placements for menu.");
+                    Logger.LogError(ex, "[World-Text] Failed to load DB placements for menu.");
                     Server.NextFrame(() => player.PrintToChat($"{chatPrefix} {ChatColors.LightRed}Failed to load placements from DB."));
                     return;
                 }
@@ -204,7 +204,7 @@ namespace WallText
                 _ = Task.Run(async () =>
                 {
                     try { await UpdatePlacementInDb(slot.Id, newPos, newRot); }
-                    catch (Exception ex) { Logger.LogError(ex, "[Wall-Text] UpdatePlacementInDb failed."); }
+                    catch (Exception ex) { Logger.LogError(ex, "[World-Text] UpdatePlacementInDb failed."); }
                 });
 
                 slot.Pos = newPos;
