@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace WorldText
 {
-    public partial class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
+    public partial class PluginWorldText : BasePlugin, IPluginConfig<PluginConfig>
     {
         private static Vector ZeroVec() => new Vector(0, 0, 0);
         private static QAngle ZeroAng() => new QAngle(0, 0, 0);

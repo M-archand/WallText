@@ -12,7 +12,7 @@ using MySqlConnector;
 
 namespace WorldText
 {
-    public partial class PluginWallText
+    public partial class PluginWorldText : BasePlugin, IPluginConfig<PluginConfig>
     {
         private string? _connectionString;
 
@@ -127,7 +127,7 @@ namespace WorldText
                 return;
             }
 
-            player.PrintToChat($"{chatPrefix} {ChatColors.White}Scanning {ChatColors.Lime}/plugins/WallText/maps {ChatColors.White}folder");
+            player.PrintToChat($"{chatPrefix} {ChatColors.White}Scanning {ChatColors.Lime}/plugins/WorldText/maps {ChatColors.White}folder");
 
             _ = Task.Run(async () =>
             {
