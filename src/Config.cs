@@ -21,6 +21,9 @@ namespace WorldText
         [JsonPropertyName("TextScale")]
         public float TextScale { get; set; } = 0.45f;
 
+        [JsonPropertyName("EnableBackground")]
+        public bool EnableBackground { get; set; } = true;
+
         [JsonPropertyName("RemoveDistance")]
         public float RemoveDistance { get; set; } = 200.0f;
 
@@ -39,25 +42,39 @@ namespace WorldText
         [JsonPropertyName("CommandPermission")]
         public string CommandPermission { get; set; } = "@css/root";
 
-
         [JsonPropertyName("WorldText")]
-        public Dictionary<int, List<string>> WorldText { get; set; } = new Dictionary<int, List<string>>()
+        public Dictionary<int, WorldTextGroup> WorldText { get; set; } = new()
         {
-            { 1, new List<string>
-                {
-                    "{White}First line of text from Group 1.",
-                    "{White}Second line of text from Group 1.",
-                    "{White}Third line of text from Group 1."
+            { 1, new WorldTextGroup {
+                    BgWidth = 40f,
+                    Lines = new()
+                    {
+                        "{White}First line of text from Group 1.",
+                        "{White}Second line of text from Group 1.",
+                        "{White}Third line of text from Group 1."
+                    }
                 }
             },
-            { 2, new List<string>
-                {
-                    "{White}First line of text from Group 2.",
-                    "{White}Second line of text from Group 2.",
-                    "{White}Third line of text from Group 2."
+            { 2, new WorldTextGroup {
+                    BgWidth = 64f,
+                    Lines = new()
+                    {
+                        "{White}First line of text from Group 2.",
+                        "{White}Second line of text from Group 2.",
+                        "{White}Third line of text from Group 2."
+                    }
                 }
             }
         };
+    }
+
+    public sealed class WorldTextGroup
+    {
+        [JsonPropertyName("bgWidth")]
+        public float BgWidth { get; set; } = 40f;
+
+        [JsonPropertyName("lines")]
+        public List<string> Lines { get; set; } = new();
     }
     
     public sealed class DatabaseSettings

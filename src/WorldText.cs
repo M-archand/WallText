@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 namespace WorldText
 {
     [MinimumApiVersion(205)]
-    public partial class PluginWallText : BasePlugin, IPluginConfig<PluginConfig>
+    public partial class PluginWorldText : BasePlugin, IPluginConfig<PluginConfig>
     {
         public override string ModuleName => "World Text";
         public override string ModuleAuthor => "Marchand";
@@ -105,7 +105,7 @@ namespace WorldText
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError(ex, "Error loading WallText info from database. Please check your credentials.");
+                        Logger.LogError(ex, "Error loading WorldText info from database. Please check your credentials.");
                         Server.NextWorldUpdate(() => LoadWorldTextFromJson());
                     }
                 });
@@ -158,9 +158,9 @@ namespace WorldText
                 return;
             }
 
-            if (!Config.WorldText.TryGetValue(groupNumber, out var _) || (Config.WorldText[groupNumber] == null) || (Config.WorldText[groupNumber].Count == 0))
+            if (!Config.WorldText.TryGetValue(groupNumber, out var group) || group == null || group.Lines == null || group.Lines.Count == 0)
             {
-                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}Group {groupNumber} was not found in the config.");
+                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}Group {groupNumber} was not found in the config. Please create it first.");
                 return;
             }
 
@@ -486,28 +486,43 @@ namespace WorldText
         {
             var linesList = new List<TextLine>();
 
-            if (Config.WorldText.TryGetValue(groupNumber, out var textGroup))
+            if (!Config.WorldText.TryGetValue(groupNumber, out var group) ||
+                group == null || group.Lines == null || group.Lines.Count == 0)
             {
-                foreach (var text in textGroup)
-                {
-                    if (!string.IsNullOrEmpty(text))
-                    {
-                        var (color, parsedText) = ParseColorAndText(text);
-                        linesList.Add(new TextLine
-                        {
-                            Text = parsedText,
-                            Color = color,
-                            FontSize = Config.FontSize,
-                            FullBright = true,
-                            Scale = Config.TextScale,
-                            JustifyHorizontal = GetTextAlignment()
-                        });
-                    }
-                }
+                Logger.LogWarning($"WorldText {groupNumber} not found in config.");
+                return linesList;
             }
-            else
+
+            foreach (var raw in group.Lines)
             {
-                Logger.LogWarning($"WallText {groupNumber} not found in config.");
+                if (string.IsNullOrWhiteSpace(raw))
+                    continue;
+
+                var (color, parsedText) = ParseColorAndText(raw);
+
+                linesList.Add(new TextLine
+                {
+                    Text              = parsedText,
+                    Color             = color,
+                    FontSize          = Config.FontSize,
+                    FullBright        = true,
+                    Scale             = Config.TextScale,
+                    JustifyHorizontal = GetTextAlignment()
+                });
+            }
+
+            if (Config.EnableBackground && linesList.Count > 0)
+            {
+                var first = linesList[0];
+
+                first.BackgroundEnabled       = true;
+                first.BackgroundAsSingleBlock = true;
+                first.BackgroundHideText      = true;
+                first.BackgroundFullBright    = true;
+                first.BackgroundColor = Color.FromArgb(255, 0, 0, 0);
+                first.BackgroundDepthOffset   = -0.5f;
+                first.BackgroundBorderHeight  = 0.00f;
+                first.BackgroundBorderWidth   = group.BgWidth;
             }
 
             return linesList;
