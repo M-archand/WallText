@@ -12,18 +12,6 @@ namespace WorldText
         public bool EnableDatabase { get; set; } = true;
         public DatabaseSettings DatabaseSettings { get; set; } = new DatabaseSettings();
 
-        [JsonPropertyName("TextAlignment")]
-        public string TextAlignment { get; set; } = "left";
-
-        [JsonPropertyName("FontSize")]
-        public int FontSize { get; set; } = 24;
-
-        [JsonPropertyName("TextScale")]
-        public float TextScale { get; set; } = 0.45f;
-
-        [JsonPropertyName("EnableBackground")]
-        public bool EnableBackground { get; set; } = true;
-
         [JsonPropertyName("RemoveDistance")]
         public float RemoveDistance { get; set; } = 200.0f;
 
@@ -39,6 +27,9 @@ namespace WorldText
         [JsonPropertyName("MenuType")]
         public string MenuType { get; set; } = "WasdMenu";
 
+        [JsonPropertyName("MoveDistance")]
+        public int MoveDistance { get; set; } = 5;
+
         [JsonPropertyName("CommandPermission")]
         public string CommandPermission { get; set; } = "@css/root";
 
@@ -46,22 +37,32 @@ namespace WorldText
         public Dictionary<int, WorldTextGroup> WorldText { get; set; } = new()
         {
             { 1, new WorldTextGroup {
-                    BgWidth = 40f,
+                    BgEnable = true,
+                    BgWidth = 35f,
+                    TextAlignment = "left",
+                    FontSize = 24,
+                    TextScale = 0.45f,
+                    ZOffset = 25f,
                     Lines = new()
                     {
-                        "{White}First line of text from Group 1.",
+                        "{Red}First line of text from Group 1.",
                         "{White}Second line of text from Group 1.",
-                        "{White}Third line of text from Group 1."
+                        "{Red}Third line of text from Group 1."
                     }
                 }
             },
             { 2, new WorldTextGroup {
-                    BgWidth = 64f,
+                    BgEnable = true,
+                    BgWidth = 70f,
+                    TextAlignment = "center",
+                    FontSize = 24,
+                    TextScale = 0.45f,
+                    ZOffset = 0f,
                     Lines = new()
                     {
-                        "{White}First line of text from Group 2.",
-                        "{White}Second line of text from Group 2.",
-                        "{White}Third line of text from Group 2."
+                        "{Lime}First line of text from Group 2. This is is a bit longer.",
+                        "{Magenta}Second line of text from Group 2. This is is a bit longer.",
+                        "{White}Third line of text from Group 2. This is is a bit longer."
                     }
                 }
             }
@@ -70,8 +71,23 @@ namespace WorldText
 
     public sealed class WorldTextGroup
     {
+        [JsonPropertyName("bgEnable")]
+        public bool BgEnable { get; set; } = true;
+
         [JsonPropertyName("bgWidth")]
         public float BgWidth { get; set; } = 40f;
+
+        [JsonPropertyName("textAlignment")]
+        public string TextAlignment { get; set; } = "left";
+
+        [JsonPropertyName("fontSize")]
+        public int FontSize { get; set; } = 24;
+
+        [JsonPropertyName("textScale")]
+        public float TextScale { get; set; } = 0.45f;
+
+        [JsonPropertyName("zOffset")]
+        public float ZOffset { get; set; } = 0f;
 
         [JsonPropertyName("lines")]
         public List<string> Lines { get; set; } = new();
