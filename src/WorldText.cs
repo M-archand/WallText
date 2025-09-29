@@ -2,7 +2,7 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes;
 using CounterStrikeSharp.API.Core.Capabilities;
-using CounterStrikeSharp.API.Modules.Admin;
+using CounterStrikeSharp.API.Modules.Extensions;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
 using CS2MenuManager.API.Class;
@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Text.Json;
 using Dapper;
 using Microsoft.Extensions.Logging;
+
 
 namespace WorldText
 {
@@ -80,8 +81,10 @@ namespace WorldText
             catch (Exception)
             {
                 _hasMenuManager = false;
-                Server.PrintToConsole("[Wall-Lists] CS2MenuManager API not found! Move menu command has been disabled.");
+                Server.PrintToConsole("[World-Text] CS2MenuManager API not found! Move menu command has been disabled.");
             }
+
+            Config.Reload();
         }
 
         public void OnConfigParsed(PluginConfig config)
@@ -119,6 +122,7 @@ namespace WorldText
             AddCommand($"css_{Config.RemoveCommand}", "Removes the closest list, whether points or map", OnTextRemove);
             AddCommand($"css_{Config.MoveCommand}", "Removes the closest list, whether points or map", OnTextMove);
             AddCommand("css_importtext", "Imports any existing JSON list locations into the database", OnImportText);
+            AddCommand("css_refreshtext", "Refresh the config and reload the text in the world.", OnRefreshText);
         }
 
         public override void Unload(bool hotReload)
@@ -132,70 +136,6 @@ namespace WorldText
                 }
             }
             _currentTextByGroup.Clear();
-        }
-
-        // The handler for when !text <#> is called
-        private void OnTextAdd(CCSPlayerController? player, CommandInfo? command)
-        {
-            if (player == null || command == null) return;
-
-            if (!AdminManager.PlayerHasPermissions(player, Config.CommandPermission))
-            {
-                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}You do not have permission to use this command.");
-                return;
-            }
-
-            var api = Capability_SharedAPI.Get();
-            if (api is null)
-            {
-                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}K4-WorldText-API missing.");
-                return;
-            }
-
-            if (command.ArgCount < 2 || !int.TryParse(command.GetArg(1), out var groupNumber))
-            {
-                command.ReplyToCommand($"{chatPrefix} {ChatColors.White}Usage: {ChatColors.LightRed}!{Config.AddCommand} <groupNumber>");
-                return;
-            }
-
-            if (!Config.WorldText.TryGetValue(groupNumber, out var group) || group == null || group.Lines == null || group.Lines.Count == 0)
-            {
-                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}Group {groupNumber} was not found in the config. Please create it first.");
-                return;
-            }
-
-            var linesList = GetTextLines(groupNumber);
-
-            Server.NextWorldUpdate(() =>
-            {
-                try
-                {
-                    int messageID = api.AddWorldTextAtPlayer(player, TextPlacement.Wall, linesList);
-
-                    if (!_currentTextByGroup.ContainsKey(groupNumber))
-                        _currentTextByGroup[groupNumber] = new List<int>();
-                    _currentTextByGroup[groupNumber].Add(messageID);
-
-                    var lineList = api.GetWorldTextLineEntities(messageID);
-                    if (lineList?.Count > 0)
-                    {
-                        var location = lineList[0]?.AbsOrigin;
-                        var rotation = lineList[0]?.AbsRotation;
-
-                        if (location != null && rotation != null)
-                        {
-                            if (Config.EnableDatabase)
-                                _ = InsertWorldTextToDb(Server.MapName, groupNumber, location, rotation);
-                            else
-                                SaveWorldTextToFile(location, rotation, groupNumber);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Error during NextWorldUpdate for OnTextAdd.");
-                }
-            });
         }
 
         private void SaveWorldTextToFile(Vector location, QAngle rotation, int groupNumber)
@@ -226,35 +166,19 @@ namespace WorldText
             File.WriteAllText(path, JsonSerializer.Serialize(data, jsonOptions));
         }
 
-        // The handler for when !removetext is called
-        public void OnTextRemove(CCSPlayerController? player, CommandInfo? command)
+        private async Task SaveWorldTextToDb(string mapName, int group, Vector location, QAngle rotation)
         {
-            if (player == null || command == null) return;
+            string table = $"{Config.DatabaseSettings.TableName}";
+            using var conn = CreateDbConnection();
 
-            if (!AdminManager.PlayerHasPermissions(player, Config.CommandPermission))
-            {
-                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}You do not have permission to use this command.");
-                return;
-            }
+            var loc = VecToStringInvariant(location);
+            var ang = AngToStringInvariant(rotation);
 
-            var mapName = Server.MapName;
-            var api = Capability_SharedAPI.Get();
-            if (api == null)
-            {
-                command.ReplyToCommand($"{chatPrefix} {ChatColors.LightRed}K4-WorldText-API missing.");
-                return;
-            }
+            string sql = $@"
+                    INSERT IGNORE INTO `{table}` (`MapName`,`GroupNumber`,`Location`,`Angle`)
+                    VALUES (@m,@g,@loc,@ang);";
 
-            var pawn = player.PlayerPawn?.Value;
-            var atPos = pawn?.AbsOrigin ?? player.AbsOrigin!;
-
-            if (Config.EnableDatabase)
-            {
-                _ = RemoveClosestDbText(mapName, atPos, player);
-                return;
-            }
-            else
-                Server.NextWorldUpdate(() => RemoveClosestJsonText(player, command));
+            await conn.ExecuteAsync(sql, new { m = mapName, g = group, loc, ang });
         }
 
         private async Task<bool> RemoveClosestDbText(string mapName, Vector playerPos, CCSPlayerController player)
@@ -504,14 +428,14 @@ namespace WorldText
                 {
                     Text              = parsedText,
                     Color             = color,
-                    FontSize          = Config.FontSize,
+                    FontSize          = group.FontSize,
                     FullBright        = true,
-                    Scale             = Config.TextScale,
-                    JustifyHorizontal = GetTextAlignment()
+                    Scale             = group.TextScale,
+                    JustifyHorizontal = GetTextAlignment(group.TextAlignment)
                 });
             }
 
-            if (Config.EnableBackground && linesList.Count > 0)
+            if (group.BgEnable && linesList.Count > 0)
             {
                 var first = linesList[0];
 
@@ -607,15 +531,22 @@ namespace WorldText
             return new QAngle(p, y, r);
         }
 
-        private PointWorldTextJustifyHorizontal_t GetTextAlignment()
+        private PointWorldTextJustifyHorizontal_t GetTextAlignment(string? align)
         {
-            return Config.TextAlignment.ToLower() switch
+            switch ((align ?? "center").Trim().ToLowerInvariant())
             {
-                "left" => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_LEFT,
-                "center" => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_CENTER,
-                "right" => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_RIGHT,
-                _ => PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_CENTER
-            };
+                case "left":
+                    return PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_LEFT;
+                case "right":
+                    return PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_RIGHT;
+                case "center":
+                case "centre":
+                case "middle":
+                    return PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_CENTER;
+                default:
+                    Logger.LogWarning("Unknown textAlignment '{0}' - defaulting to center.", align);
+                    return PointWorldTextJustifyHorizontal_t.POINT_WORLD_TEXT_JUSTIFY_HORIZONTAL_CENTER;
+            }
         }
 
         private (Color color, string text) ParseColorAndText(string text)
