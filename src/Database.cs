@@ -79,21 +79,6 @@ namespace WorldText
         private static string AngToStringInvariant(QAngle a) =>
             $"{a.X.ToString("0.###", CultureInfo.InvariantCulture)} {a.Y.ToString("0.###", CultureInfo.InvariantCulture)} {a.Z.ToString("0.###", CultureInfo.InvariantCulture)}";
 
-        private async Task InsertWorldTextToDb(string mapName, int group, Vector location, QAngle rotation)
-        {
-            string table = $"{Config.DatabaseSettings.TableName}";
-            using var conn = CreateDbConnection();
-
-            var loc = VecToStringInvariant(location);
-            var ang = AngToStringInvariant(rotation);
-
-            string sql = $@"
-                    INSERT IGNORE INTO `{table}` (`MapName`,`GroupNumber`,`Location`,`Angle`)
-                    VALUES (@m,@g,@loc,@ang);";
-
-            await conn.ExecuteAsync(sql, new { m = mapName, g = group, loc, ang });
-        }
-
         private async Task DeleteWorldTextFromDb(string mapName, int group, Vector location, QAngle rotation)
         {
             string table = $"{Config.DatabaseSettings.TableName}";
@@ -251,7 +236,7 @@ namespace WorldText
                             var loc = new Vector(e.X, e.Y, e.Z);
                             var ang = new QAngle(e.Pitch, e.Yaw, e.Roll);
 
-                            InsertWorldTextToDb(e.MapName, e.GroupNumber, loc, ang).GetAwaiter().GetResult();
+                            SaveWorldTextToDb(e.MapName, e.GroupNumber, loc, ang).GetAwaiter().GetResult();
                         }
                         catch (Exception ex)
                         {
