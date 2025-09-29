@@ -159,17 +159,19 @@ namespace WorldText
         // Level 3a: translate
         private void ShowMoveLocationMenu(CCSPlayerController player, DbPlacement slot, IMenu prev)
         {
-            const float step = 5f;
+
+            float step = MathF.Max(0.01f, (float)Config.MoveDistance);
+            string s = step.ToString("0.##", CultureInfo.InvariantCulture);
 
             var m = CreateMenu($"Move Group {slot.GroupNumber} • Id {slot.Id}");
             m.PrevMenu = prev;
 
-            AddMove(m, "(Y - 5)", slot, new Vector(0, -step, 0), ZeroAng());
-            AddMove(m, "(Y + 5)", slot, new Vector(0, +step, 0), ZeroAng());
-            AddMove(m, "(X + 5)", slot, new Vector(+step, 0, 0), ZeroAng());
-            AddMove(m, "(X - 5)", slot, new Vector(-step, 0, 0), ZeroAng());
-            AddMove(m, "Move Up (Z + 5)", slot, new Vector(0, 0, +step), ZeroAng());
-            AddMove(m, "Move Down (Z - 5)", slot, new Vector(0, 0, -step), ZeroAng());
+            AddMove(m, $"(Y - {s})",           slot, new Vector(0, -step, 0), ZeroAng());
+            AddMove(m, $"(Y + {s})",           slot, new Vector(0, +step, 0), ZeroAng());
+            AddMove(m, $"(X + {s})",           slot, new Vector(+step, 0, 0), ZeroAng());
+            AddMove(m, $"(X - {s})",           slot, new Vector(-step, 0, 0), ZeroAng());
+            AddMove(m, $"Move Up (Z + {s})",   slot, new Vector(0, 0, +step), ZeroAng());
+            AddMove(m, $"Move Down (Z - {s})", slot, new Vector(0, 0, -step), ZeroAng());
 
             m.Display(player, 0);
         }
@@ -177,17 +179,18 @@ namespace WorldText
         // Level 3b: rotate
         private void ShowMoveAngleMenu(CCSPlayerController player, DbPlacement slot, IMenu prev)
         {
-            const float step = 5f;
+            float step = MathF.Max(0.01f, (float)Config.MoveDistance);
+            string s = step.ToString("0.##", CultureInfo.InvariantCulture);
 
             var m = CreateMenu($"Rotate Group {slot.GroupNumber} • Id {slot.Id}");
             m.PrevMenu = prev;
 
-            AddMove(m, "Pitch +5", slot, ZeroVec(), new QAngle(+step, 0, 0));
-            AddMove(m, "Pitch -5", slot, ZeroVec(), new QAngle(-step, 0, 0));
-            AddMove(m, "Yaw +5",   slot, ZeroVec(), new QAngle(0, +step, 0));
-            AddMove(m, "Yaw -5",   slot, ZeroVec(), new QAngle(0, -step, 0));
-            AddMove(m, "Roll +5",  slot, ZeroVec(), new QAngle(0, 0, +step));
-            AddMove(m, "Roll -5",  slot, ZeroVec(), new QAngle(0, 0, -step));
+            AddMove(m, $"Pitch +{s}", slot, ZeroVec(), new QAngle(+step, 0, 0));
+            AddMove(m, $"Pitch -{s}", slot, ZeroVec(), new QAngle(-step, 0, 0));
+            AddMove(m, $"Yaw +{s}",   slot, ZeroVec(), new QAngle(0, +step, 0));
+            AddMove(m, $"Yaw -{s}",   slot, ZeroVec(), new QAngle(0, -step, 0));
+            AddMove(m, $"Roll +{s}",  slot, ZeroVec(), new QAngle(0, 0, +step));
+            AddMove(m, $"Roll -{s}",  slot, ZeroVec(), new QAngle(0, 0, -step));
 
             m.Display(player, 0);
         }
