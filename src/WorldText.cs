@@ -417,12 +417,26 @@ namespace WorldText
                 return linesList;
             }
 
+            // Decide which side to pad based on alignment
+            string align = (group.TextAlignment ?? "Center").Trim().ToLowerInvariant();
+            const int padChars = 2;
+            string pad = new string('\u00A0', padChars);
+
             foreach (var raw in group.Lines)
             {
                 if (string.IsNullOrWhiteSpace(raw))
                     continue;
 
                 var (color, parsedText) = ParseColorAndText(raw);
+
+                // Only pad when background is enabled
+                if (group.BgEnable)
+                {
+                    if (align == "left")
+                        parsedText = pad + parsedText;
+                    else if (align == "right")
+                        parsedText = parsedText + pad;
+                }
 
                 linesList.Add(new TextLine
                 {
@@ -443,7 +457,7 @@ namespace WorldText
                 first.BackgroundAsSingleBlock = true;
                 first.BackgroundHideText      = true;
                 first.BackgroundFullBright    = true;
-                first.BackgroundColor = Color.FromArgb(255, 0, 0, 0);
+                first.BackgroundColor         = Color.FromArgb(255, 0, 0, 0);
                 first.BackgroundDepthOffset   = -0.5f;
                 first.BackgroundBorderHeight  = 0.00f;
                 first.BackgroundBorderWidth   = group.BgWidth;
