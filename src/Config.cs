@@ -12,9 +12,6 @@ namespace WorldText
         public bool EnableDatabase { get; set; } = true;
         public DatabaseSettings DatabaseSettings { get; set; } = new DatabaseSettings();
 
-        [JsonPropertyName("RemoveDistance")]
-        public float RemoveDistance { get; set; } = 200.0f;
-
         [JsonPropertyName("RemoveCommand")]
         public string RemoveCommand { get; set; } = "rtext";
 

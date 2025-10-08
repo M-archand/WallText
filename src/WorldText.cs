@@ -119,10 +119,10 @@ namespace WorldText
             }
 
             AddCommand($"css_{Config.AddCommand}", "Add text in front of you", OnTextAdd);
-            AddCommand($"css_{Config.RemoveCommand}", "Removes the closest list, whether points or map", OnTextRemove);
-            AddCommand($"css_{Config.MoveCommand}", "Removes the closest list, whether points or map", OnTextMove);
-            AddCommand("css_importtext", "Imports any existing JSON list locations into the database", OnImportText);
-            AddCommand("css_refreshtext", "Refresh the config and reload the text in the world.", OnRefreshText);
+            AddCommand($"css_{Config.RemoveCommand}", "Removes the closest group of text", OnTextRemove);
+            AddCommand($"css_{Config.MoveCommand}", "Opens a menu to adjust the text location/angles", OnTextMove);
+            AddCommand("css_importtext", "Imports any existing JSON text locations into the database", OnImportText);
+            AddCommand("css_reloadtext", "Refresh the config and reload the text in the world.", OnRefreshText);
         }
 
         public override void Unload(bool hotReload)
@@ -214,7 +214,7 @@ namespace WorldText
                         float dx = loc.X - playerPos.X, dy = loc.Y - playerPos.Y, dz = loc.Z - playerPos.Z;
                         float dist = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
 
-                        if (dist < bestDist && dist <= Config.RemoveDistance)
+                        if (dist < bestDist && dist <= 200.0f)
                         {
                             bestDist = dist;
                             targetMsgId = msgId;
@@ -267,7 +267,7 @@ namespace WorldText
             foreach (var group in _currentTextByGroup)
             {
                 var groupTextList = group.Value;
-                float removeDistance = Config.RemoveDistance;
+                float removeDistance = 200.0f;
 
                 var closest = groupTextList
                     .SelectMany(id => checkAPI.GetWorldTextLineEntities(id)?.Select(entity => new { Id = id, Entity = entity }) ?? Enumerable.Empty<dynamic>())
@@ -285,7 +285,7 @@ namespace WorldText
 
             if (target is null)
             {
-                command.ReplyToCommand($"{chatPrefix} {ChatColors.Red}Move within {Config.RemoveDistance} units of the text that you want to remove.");
+                command.ReplyToCommand($"{chatPrefix} {ChatColors.Red}Move within 200 units of the text that you want to remove.");
                 return;
             }
 
@@ -458,7 +458,7 @@ namespace WorldText
                 first.BackgroundHideText      = true;
                 first.BackgroundFullBright    = true;
                 first.BackgroundColor         = Color.FromArgb(255, 0, 0, 0);
-                first.BackgroundDepthOffset   = -0.5f;
+                first.BackgroundDepthOffset   = -0.50f;
                 first.BackgroundBorderHeight  = 0.00f;
                 first.BackgroundBorderWidth   = group.BgWidth;
             }
