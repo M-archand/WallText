@@ -60,7 +60,6 @@ All commands can be configured, these are the default commands:
   "WorldText": {
     "1": {
       "bgEnable": true, # Enable/disable a background behind the text
-      "bgIntensity": 2, # How dark the background is. E.g. 1 = see through, 3 = opaque black
       "bgWidth": 34,    # How wide the background should be
       "textAlignment": "center", # Left, Center, Right
       "fontSize": 24,
@@ -74,7 +73,6 @@ All commands can be configured, these are the default commands:
     },
     "2": {
       "bgEnable": false,
-      "bgIntensity": 1,
       "bgWidth": 34,
       "textAlignment": "left",
       "fontSize": 24,
